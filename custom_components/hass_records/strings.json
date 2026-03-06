@@ -1,0 +1,30 @@
+{
+  "services": {
+    "record": {
+      "name": "Record Event",
+      "description": "Record a custom event with an optional chart annotation.",
+      "fields": {
+        "message": {
+          "name": "Message",
+          "description": "Short description of the event."
+        },
+        "annotation": {
+          "name": "Annotation",
+          "description": "Detailed tooltip text for chart markers."
+        },
+        "entity_id": {
+          "name": "Entity",
+          "description": "Entity to associate this event with."
+        },
+        "icon": {
+          "name": "Icon",
+          "description": "MDI icon name."
+        },
+        "color": {
+          "name": "Color",
+          "description": "Hex color for the marker."
+        }
+      }
+    }
+  }
+}
