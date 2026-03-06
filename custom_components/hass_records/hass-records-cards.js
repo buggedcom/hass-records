@@ -103,6 +103,10 @@
       return lum < 128;
     }
 
+    clear() {
+      this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    }
+
     drawGrid(t0, t1, vMin, vMax, yTicks = 5) {
       const { ctx, pad } = this;
       const gridColor = "rgba(128,128,128,0.15)";
@@ -972,15 +976,24 @@
    * Register custom elements
    * ───────────────────────────────────────────────── */
 
-  customElements.define("hass-records-action-card", HassRecordsActionCard);
-  customElements.define("hass-records-history-card", HassRecordsHistoryCard);
-  customElements.define(
-    "hass-records-statistics-card",
-    HassRecordsStatisticsCard
-  );
+  // Define custom elements only if not already registered (prevents errors when the script loads twice)
+  if (!customElements.get("hass-records-action-card")) {
+    customElements.define("hass-records-action-card", HassRecordsActionCard);
+  }
+  if (!customElements.get("hass-records-history-card")) {
+    customElements.define("hass-records-history-card", HassRecordsHistoryCard);
+  }
+  if (!customElements.get("hass-records-statistics-card")) {
+    customElements.define(
+      "hass-records-statistics-card",
+      HassRecordsStatisticsCard
+    );
+  }
 
+  // Register in Lovelace custom cards list once
   window.customCards = window.customCards || [];
-  window.customCards.push(
+  const registeredTypes = new Set(window.customCards.map((c) => c.type));
+  const cardsToAdd = [
     {
       type: "hass-records-action-card",
       name: "Hass Records – Action Card",
@@ -998,8 +1011,13 @@
       name: "Hass Records – Statistics Card",
       description: "Statistics line chart with coloured annotation markers for recorded events.",
       preview: false,
+    },
+  ];
+  cardsToAdd.forEach((card) => {
+    if (!registeredTypes.has(card.type)) {
+      window.customCards.push(card);
     }
-  );
+  });
 
   console.info(
     "%c HASS-RECORDS %c v0.1.0 loaded ",

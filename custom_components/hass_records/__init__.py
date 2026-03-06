@@ -6,6 +6,7 @@ from pathlib import Path
 import voluptuous as vol
 
 from homeassistant.components.frontend import add_extra_js_url
+from homeassistant.components.http import StaticPathConfig
 from homeassistant.core import HomeAssistant, ServiceCall
 from homeassistant.helpers import config_validation as cv
 
@@ -44,11 +45,13 @@ async def async_setup(hass: HomeAssistant, config: dict) -> bool:
     hass.data[DOMAIN] = {"store": store}
 
     # Serve the frontend card JS file
-    hass.http.register_static_path(
-        FRONTEND_URL,
-        str(Path(__file__).parent / "hass-records-cards.js"),
-        cache_headers=False,
-    )
+    await hass.http.async_register_static_paths([
+        StaticPathConfig(
+            FRONTEND_URL,
+            str(Path(__file__).parent / "hass-records-cards.js"),
+            cache_headers=False,
+        )
+    ])
 
     # Auto-register as a Lovelace module resource so cards are immediately available
     add_extra_js_url(hass, FRONTEND_URL)
